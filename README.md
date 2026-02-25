@@ -14,7 +14,7 @@
     ```
 #### Set **[$UNREAL_PATH]** env var
 - in **`~/.basrc`** set path to wherever your binaries are located on your computer.
-- export **$UNREAL_PATH=<path-to-your-binaries>**
+- export **$UNREAL_PATH=< path-to-your-binaries >**
 #### Build binaries
 ```bash
 ./Setup.sh
