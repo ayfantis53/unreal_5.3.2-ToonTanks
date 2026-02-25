@@ -1,9 +1,11 @@
 #!/bin/bash
-## ---------------------------------------------------------------##
-## ------- Script to make running Project easier on Linux --------##
-## ---------------------------------------------------------------##
+
+### ========================================================================== ###
+###                         - HELPER FUNCTIONS -                               ###
+### ========================================================================== ###
 
 ## VARIABLES------------------------------------------------------##
+
 RED='\033[1;31m'
 BLUE='\033[1;36m'
 GREEN='\033[1;32m'
@@ -16,13 +18,14 @@ WHITEN='\033[0;37m'
 PROJECT="ToonTanks"
 
 ## FUNCTIONS------------------------------------------------------##
-## Generate files for unreal project code
+
+#-- Generate files for unreal project code
 function generate_project_files()
 {
   "${UNREAL_PATH}/Engine/Build/BatchFiles/Linux/GenerateProjectFiles.sh" "${PWD}/${PROJECT}.uproject"
 }
 
-## Compile unreal project code
+#-- Compile unreal project code
 function compile_code()
 {
   make "${PROJECT}Editor"
@@ -38,13 +41,13 @@ function compile_code()
   fi
 }
 
-## Run unreal project code in Editor
+#-- Run unreal project code in Editor
 function run_editor()
 {
   "${UNREAL_PATH}/Engine/Binaries/Linux/UnrealEditor" "${PWD}/${PROJECT}.uproject"
 }
 
-## Handle Unreal unit and component tests
+#-- Handle Unreal unit and component tests
 function run_tests()
 {
   # make sure code works
@@ -129,7 +132,7 @@ function run_tests()
   fi
 }
 
-## Package project
+#-- Package project
 function package_game()
 {
   # Get the package type from args
@@ -170,7 +173,7 @@ function package_game()
   echo -e "|--------------------------- ${GREEN}Package Complete ${NOCOLOR} ---------------------------|" 
 }
 
-# run packaged game
+#-- run packaged game
 function run_game()
 {
   GAME="${PWD}/Saved/StagedBuilds/Linux/${PROJECT}.sh"
@@ -181,6 +184,7 @@ function run_game()
   fi
 }
 
+#-- clean up unreal folders.
 function clean()
 {
   # remove folders that get rebuilt
@@ -191,11 +195,18 @@ function clean()
     find $UNREAL_PATH/Engine/Binaries/Linux/ -name 'core.Unreal*' -exec rm {} \;
   fi 
 }
-## FUNCTIONS------------------------------------------------------##
+
+### ========================================================================== ###
+###                         - /HELPER FUNCTIONS -                              ###
+### ========================================================================== ###
 
 
-## MAIN-----------------------------------------------------------##
-## ---------------------------------------------------------------##
+### ========================================================================== ###
+###                                                                            ###
+###                     - RUN SCRIPT TO MAKE LIFE EASIER -                     ###
+###                                                                            ###
+### ========================================================================== ###
+
 # Check if any arguments were provided
 if [ $# -eq 0 ]; then
   echo -e "|----- ${YELLOW}No arguments provided. Please provide at least one argument.${NOCOLOR} -----|"
@@ -204,42 +215,72 @@ fi
 
 # Perform action on project based on user args
 case "$1" in
-  -g|--generate)
-    generate_project_files
+    -g|--generate)
+        generate_project_files
     ;;
-  -c|--compile)
-    compile_code
+    # Command to compile project code.
+    # Example: ./run.sh -c
+    -c|--compile)
+        compile_code
     ;;
-  -e|--editor)
-    run_editor
+    # Command to launch editor with project.
+    # Example: ./run.sh -e
+    -e|--editor)
+        run_editor
     ;;
-  -m|--make)
-    compile_code
-    run_editor
+    # Command to compile code and to launch editor with project.
+    # Example: ./run.sh -m
+    -m|--make)
+        compile_code
+        run_editor
     ;;
-  -u|--unit-test)
-    run_tests "$@"
+    # Command to kick off unit tests of your choosing. Run all tests with no testname provided
+    # Example Run all:       ./run.sh -u
+    # Example Single test:   ./run.sh -u Pawns.BasePawn.SpawnActor
+    -u|--unit-test)
+        run_tests "$@"
     ;;
-  -f|--func-test)
-    run_tests "$@"
+    # Command to kick off funcitonal component tests of your choosing. Run all tests with no testname provided
+    # Example Run all:     ./run.sh -f                          -- OR --  ./run.sh -f EDITOR
+    # Example Single test: ./run.sh -f TT_functional_test_tank  -- OR --  ./run.sh -f TT_functional_test_tank EDITOR
+    -f|--func-test)
+        run_tests "$@"
     ;;
-  -p|--package)
-    package_game "$@"
+    # Command to package project code.
+    # Example: ./run.sh -p Development
+    -p|--package)
+        package_game "$@"
     ;;
-  -r|--run)
-    run_game
+    # Command to launch project packaged game.
+    # Example: ./run.sh -r
+    -r|--run)
+        run_game
     ;;
-  -b|--build)
-    package_game "$@"
-    run_game
+    # Command to package project code and launch project packaged game.
+    # Example: ./run.sh -b
+    -b|--build)
+        package_game "$@"
+        run_game
     ;;
-  -x|--clean)
-    clean "$@"
+    # Command to clean untracked folders in project.
+    # Example: ./run.sh -x
+    -x|--clean)
+        clean "$@"
     ;;
-  *)
-    echo -e "|----- ${YELLOW}No valid arguments provided. Please provide valid argument: compile, editor, unit-test. ${NOCOLOR}-----|"
-    exit 1
+    *)
+    echo -e "| ----- ${YELLOW}No valid arguments provided. Please provide valid argument: ${NOCOLOR}----- |"
+    echo -e "${RED}Invalid Option!: $1${NOCOLOR}"
+        echo "Options include:"
+        echo "  -g : generate files,       -c : compile code,   -e : editor"
+        echo "  -m : compile & run editor, -u : run unit tests, -f : run comp tests"
+        echo "  -p : package game,         -r : run game,       -b : package and run game"
+        echo "  -x : clean up dirs"
+        exit 1
     ;;
 esac
-## ---------------------------------------------------------------##
-## MAIN-----------------------------------------------------------##
+
+### ========================================================================== ###
+###                                                                            ###
+###                     - /RUN SCRIPT TO MAKE LIFE EASIER -                    ###
+###                                                                            ###
+### ========================================================================== ###
