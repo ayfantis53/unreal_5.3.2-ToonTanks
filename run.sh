@@ -215,6 +215,8 @@ fi
 
 # Perform action on project based on user args
 case "$1" in
+    # Generate unreal project files.
+    # Example: ./run.sh -g
     -g|--generate)
         generate_project_files
     ;;
