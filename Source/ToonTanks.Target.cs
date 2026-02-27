@@ -1,13 +1,4 @@
-// ============================================================================== //
-//							Unreal Engine version 5.3.2	
-// ============================================================================== //
-// Toon Tanks	  
-// ____________________________	
-// Developed by Andrew Yfantis.
-// https://github.com/ayfantis53
-//
-// 2025
-// ============================================================================== //
+// Copyright Epic Games, Inc. All Rights Reserved.
 
 using UnrealBuildTool;
 using System.Collections.Generic;
@@ -22,3 +13,4 @@ public class ToonTanksTarget : TargetRules
 		ExtraModuleNames.AddRange( new string[] { "ToonTanks" } );
 	}
 }
+
