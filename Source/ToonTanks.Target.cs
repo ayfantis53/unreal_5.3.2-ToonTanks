@@ -13,4 +13,3 @@ public class ToonTanksTarget : TargetRules
 		ExtraModuleNames.AddRange( new string[] { "ToonTanks" } );
 	}
 }
-
