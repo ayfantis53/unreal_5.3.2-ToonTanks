@@ -1,13 +1,4 @@
-// ============================================================================== //
-//							Unreal Engine version 5.3.2	
-// ============================================================================== //
-// Toon Tanks	  
-// ____________________________	
-// Developed by Andrew Yfantis.
-// https://github.com/ayfantis53
-//
-// 2025
-// ============================================================================== //
+// Copyright Epic Games, Inc. All Rights Reserved.
 
 using UnrealBuildTool;
 
@@ -36,3 +27,4 @@ public class Tests : ModuleRules
 		// To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
 	}
 }
+
