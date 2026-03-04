@@ -14,12 +14,12 @@
         ```
 - **Set **[$UNREAL_PATH]** env var**
     * in **`~/.basrc`** set path to wherever your binaries are located on your computer.
-    * export **$UNREAL_PATH=< path-to-your-binaries >**
+    * export **UNREAL_PATH=< path-to-your-binaries >**
 - **Build binaries**
     ```bash
     ./Setup.sh
     ./GenerateProjectFiles.sh
-    Engine/Build/BatchFiles/RunUAT.sh BuildGraph -target="Make Installed Build Linux" -script="Engine/Build
+    Engine/Build/BatchFiles/RunUAT.sh BuildGraph -target="Make Installed Build Linux" -script="Engine/Build"
     ```
 #### Generate necessary files
 - **Link Engine to project (Makefile and etc)**
@@ -98,3 +98,22 @@
     # All tests (Editor)
     ./run.sh -f EDITOR      ||      ./run.sh -func EDITOR
     ```
+
+
+-----------------------------------------------------------------------------------------------------------------
+### Docker
+#### Build Image for game
+```bash
+docker build -t unreal-test .
+```
+
+#### Run Image for game
+```bash
+docker run -it --rm unreal-test bash 
+```
+
+#### Permissions to download Unreal Image from Epic
+- Navigate to [https://github.com/orgs/epicgames/packages/container/package/unreal-engine] for most recent images.
+```bash
+echo <git_hub_token> | docker login ghcr.io -u <Github_username> --password-stdin
+```

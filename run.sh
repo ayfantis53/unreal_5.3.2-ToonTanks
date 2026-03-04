@@ -58,7 +58,7 @@ function run_tests()
     exit 1
   fi
 
-  # Delete old test Redult
+  # Delete old test Result
   if [[ -s "${PWD}/Saved/Testing/index.json" ]]; then
     rm ${PWD}/Saved/Testing/index.json
   fi
