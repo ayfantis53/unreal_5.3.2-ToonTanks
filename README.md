@@ -102,6 +102,15 @@
 
 -----------------------------------------------------------------------------------------------------------------
 ### Docker
+#### Files to update
+- Add bOverrideBuildEnvironment = true; to project.target.cs file
+
+#### Permissions to download Unreal Image from Epic
+- Navigate to [https://github.com/orgs/epicgames/packages/container/package/unreal-engine] for most recent images.
+```bash
+echo <git_hub_token> | docker login ghcr.io -u <Github_username> --password-stdin
+```
+
 #### Build Image for game
 ```bash
 docker build -t unreal-test .
@@ -110,10 +119,5 @@ docker build -t unreal-test .
 #### Run Image for game
 ```bash
 docker run -it --rm unreal-test bash 
-```
-
-#### Permissions to download Unreal Image from Epic
-- Navigate to [https://github.com/orgs/epicgames/packages/container/package/unreal-engine] for most recent images.
-```bash
-echo <git_hub_token> | docker login ghcr.io -u <Github_username> --password-stdin
+docker run -it --rm --gpus all --network host --entrypoint=bash unreal-test
 ```
