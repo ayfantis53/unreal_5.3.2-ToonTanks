@@ -118,6 +118,14 @@ docker build -t unreal-test .
 
 #### Run Image for game
 ```bash
-docker run -it --rm unreal-test bash 
 docker run -it --rm --gpus all --network host --entrypoint=bash unreal-test
 ```
+
+#### Troubleshooting
+- **Check nvidia and vulkan drivers**:
+    ```bash
+    nvidia-smi
+    vulkaninfo
+    # Confirm if the container can communicate with the driver.
+    docker run -it --gpus all unreal-test nvidia-smi -L
+    ```

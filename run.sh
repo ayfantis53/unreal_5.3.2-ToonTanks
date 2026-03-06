@@ -80,6 +80,10 @@ function run_tests()
     FAILED_TEST_TYPE="fullTestPath"
     TEST_TYPE="UEUnitTests."
     TEST_STRING="UEUnitTests"
+    if [[ $2 == "NOGPU" ]]; then
+      TEST_NAME=""
+      RENDER_FLAGS="-NullRHI"
+    fi
   fi
   if [[ $1 == "--func-test" || "$1" == "-f" ]]; then 
     FAILED_TEST_TYPE="testDisplayName"

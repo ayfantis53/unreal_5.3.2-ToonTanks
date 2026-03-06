@@ -37,17 +37,42 @@ WORKDIR /$UE_PROJECT_NAME
 # Copy project files from the local machine into the container.
 COPY . .
 
-# Adjust file permissions to allow the 'ue4' user to access project and engine files.
-RUN chown 1000 -R /$UE_PROJECT_NAME && \
-    chown 1000 -R /home/ue4/UnrealEngine && \
-    chown -R ue4:ue4 /home/ue4/UnrealEngine/Engine/Build
+# Install dependencies for Linux Editor/Target
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        libglib2.0-dev \
+        libatk1.0-0 \
+        libgtk-3-0 \
+        libdrm2 \
+        libgbm-dev \
+        libasound2 \
+        bash git \
+        jq \
+    && rm -rf /var/lib/apt/lists/*
 
+# Switch to the non-root user (UID 1000).
+USER 1000
+
+# Adjust file permissions to allow the 'ue4' user to access project and engine files.
 # Remove Windows-style line endings from a script if present.
 # Generate Linux-specific project files.
+RUN sudo chown -R 1000 /$UE_PROJECT_NAME \
+    && sed -i -e 's/\r$//' ./run.sh \
+    && ./run.sh -g 
+ 
 # Cook and build the project for Linux.
-RUN sed -i -e 's/\r$//' ./run.sh  \
-    && $UNREAL_PATH/Engine/Build/BatchFiles/Linux/GenerateProjectFiles.sh -project=/$UE_PROJECT_NAME/$UE_PROJECT_NAME.uproject \
-    && $UNREAL_PATH/Engine/Build/BatchFiles/RunUAT.sh BuildCookRun -project=/$UE_PROJECT_NAME/$UE_PROJECT_NAME.uproject
+RUN /home/ue4/UnrealEngine/Engine/Build/BatchFiles/RunUAT.sh \
+        BuildCookRun \
+        -utf8output \
+        -platform=Linux \
+        -clientconfig=Development \
+        -serverconfig=Development \
+        -project=/$UE_PROJECT_NAME/$UE_PROJECT_NAME.uproject \
+        -noP4 -nodebuginfo -allmaps \
+        -cook -build -stage -prereqs -pak -archive \
+        -archivedirectory=/$UE_PROJECT_NAME
+
+# Run unit tests.
+CMD ["./run.sh", "-u", "NOGPU"]
 
 
 # # ============================================
@@ -57,7 +82,7 @@ RUN sed -i -e 's/\r$//' ./run.sh  \
 # # This image only contains the necessary shared libraries and engine binaries to run the packaged game, not build it.
 # FROM ghcr.io/epicgames/unreal-engine:dev-slim-5.7
 
-# ENV UE_PROJECT_NAME
+# ENV UE_PROJECT_NAME="ToonTanks"
 
 # # Set the working directory for the runtime container.
 # WORKDIR /$UE_PROJECT_NAME
