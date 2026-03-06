@@ -98,7 +98,7 @@
     ./run.sh -f <TestName> EDITOR       ||      ./run.sh --func-test <TestName> EDITOR
 
     # Examples:
-    ./run.sh -f TT_functional_test_player/home/ayfantis/Workspace/UNREAL_ENGINE/UE_5.3.2_PROJECTS/ToonTanks_5.3.2/.ignore EDITOR
+    ./run.sh -f TT_functional_test_player EDITOR
     ```
 - **Every test**
     ```bash 
