@@ -45,8 +45,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libdrm2 \
         libgbm-dev \
         libasound2 \
-        bash git \
-        jq \
     && rm -rf /var/lib/apt/lists/*
 
 # Switch to the non-root user (UID 1000).
@@ -72,7 +70,7 @@ RUN /home/ue4/UnrealEngine/Engine/Build/BatchFiles/RunUAT.sh \
         -archivedirectory=/$UE_PROJECT_NAME
 
 # Run unit tests.
-CMD ["./run.sh", "-u", "NOGPU"]
+ENTRYPOINT ["./run.sh", "-u"]
 
 
 # # ============================================
@@ -94,4 +92,4 @@ CMD ["./run.sh", "-u", "NOGPU"]
 # # It executes the project's start-up script with specific command-line arguments:
 # # -log: Enables logging to standard output.
 # # -Port=7777: Sets the network port for the server.
-# CMD ["./$UE_PROJECT_NAME.sh", "-log", "-Port=7777"]
+# CMD ["./run.sh","NOGPU"]
