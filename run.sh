@@ -80,10 +80,7 @@ function run_tests()
     FAILED_TEST_TYPE="fullTestPath"
     TEST_TYPE="UEUnitTests."
     TEST_STRING="UEUnitTests"
-    if [[ $2 == "NOGPU" ]]; then
-      TEST_NAME=""
-      RENDER_FLAGS="-NullRHI"
-    fi
+    RENDER_FLAGS="-NullRHI"
   fi
   if [[ $1 == "--func-test" || "$1" == "-f" ]]; then 
     FAILED_TEST_TYPE="testDisplayName"
@@ -183,7 +180,11 @@ function run_game()
 {
   GAME="${PWD}/Saved/StagedBuilds/Linux/${PROJECT}.sh"
   if [[ -f "${GAME}" ]]; then
-   "${GAME}"
+    if [[ $2 == "NOGPU" ]]; then 
+      "${GAME}" -nullRhi
+    else
+       "${GAME}"
+    fi
   else
     echo -e "${RED}ERROR: ${NOCOLOR}${PROJECT}.sh does not exist"
   fi
@@ -199,6 +200,28 @@ function clean()
   if [[ $2 == "all" ]]; then
     find $UNREAL_PATH/Engine/Binaries/Linux/ -name 'core.Unreal*' -exec rm {} \;
   fi 
+}
+
+#-- clean up unneeded resources.
+function run_clean_resources()
+{
+    # Clean all core files out of $UNREAL_ENGINE binaries.
+    if [[ $2 == "bin" ]]; then
+        find "$UNREAL_PATH"/Engine/Binaries/Linux/ -name 'core.Unreal*' -exec rm {} \;
+        echo "All *.core files in binaries removed!"
+    # Kill and remove all running docker containers on machine.
+    elif [[ $2 == "containers" ]]; then
+        docker rm -f $(docker ps -aq)
+        echo "All docker containers removed!"
+    # Remove all unused docker images on machine.
+    elif [[ $2 == "images" ]]; then
+        docker image prune --all --force
+        echo "All docker images removed!"
+    # Incorrect input.
+    else
+        echo "Invalid Args For!: $1"
+        echo "Valid Args include: ./run.sh -xr bin  --OR--   ./run.sh -xr containers  --OR--   ./run.sh -xr images"
+    fi
 }
 
 ### ========================================================================== ###
@@ -261,7 +284,7 @@ case "$1" in
     # Command to launch project packaged game.
     # Example: ./run.sh -r
     -r|--run)
-        run_game
+        run_game "$@"
     ;;
     # Command to package project code and launch project packaged game.
     # Example: ./run.sh -b
@@ -274,14 +297,19 @@ case "$1" in
     -x|--clean)
         clean "$@"
     ;;
+    # Command to delete all .core crash files from ENGINE repo or remove all docker containers active.
+    # Example: ./run.sh -xr bin      --OR--      ./run.sh -xr containers      --OR--      ./run.sh -xr images 
+    -xr|--clean-res)
+        run_clean_resources "$@"
+    ;;
     *)
     echo -e "| ----- ${YELLOW}No valid arguments provided. Please provide valid argument: ${NOCOLOR}----- |"
     echo -e "${RED}Invalid Option!: $1${NOCOLOR}"
-        echo "Options include:"
-        echo "  -g : generate files,       -c : compile code,   -e : editor"
-        echo "  -m : compile & run editor, -u : run unit tests, -f : run comp tests"
-        echo "  -p : package game,         -r : run game,       -b : package and run game"
-        echo "  -x : clean up dirs"
+        echo -e  "Options include:"
+        echo "  -g : generate files,       -c  : compile code,       -e : editor"
+        echo "  -m : compile & run editor, -u  : run unit tests,     -f : run comp tests"
+        echo "  -p : package game,         -r  : run game,           -b : package and run game"
+        echo "  -x : clean up dirs         -xr : clean up resources"
         exit 1
     ;;
 esac
