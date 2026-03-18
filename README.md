@@ -1,9 +1,45 @@
-## TOON TANKS 5.3.2 (LINUX)
+# TOON TANKS 5.3.2 
 
 - Tank game built in cpp (No Blueprints)
 
+## (WINDOWS)
+--------------------------------------------------------------------------------------------
+### Game Initialization
+#### Dependencies
+- **IDE**
+    * Need Visual Studio Installed (Purple one)
+- **Build binaries**
+    * Need Epics Game Launcher installed
+    * Need to install `Unreal Engine 5.3.2`
+        - `Library` -> Yellow plus icon `Install New version of Unreal Engine`
 
------------------------------------------------------------------------------------------------------------------
+#### Unreal Editor
+- **Enable Shader Model 6 (SM6)**
+    * `Project Settings -> Platforms -> Linux -> Targeted RHIs`
+- Animation Blueprints have to be found as classes and their paths have to have a **"_C"** at the end of the reference.
+
+### Running Game
+- **Compiling and Running Editor**
+    * Navigate to project path and right click `ToonTanks.uproject` [Unreal Engine Project].
+    * Select `Generate Visual Studio Project Files`.
+    * Double click the `ToonTanks.sln`
+    * In `Solution Explorer` under `Solution 'ToonTanks'/Games/ToonTanks` left click
+    * Select `Set as startup project`
+    * press play `Local Windows Debugger`
+
+### Testing
+#### Running Unit tests
+- Run any amount of Unit test
+    * Select `Tools` -> `Automation Tools` -> `UEUnitTests`
+    * Select any amount of tests you wish to run.
+### Running Functional tests
+- Run any amount of Unit test
+    * Select `Tools` -> `Automation Tools` -> `Projects` -> `FunctionalTests`
+    * Select any amount of tests you wish to run.
+
+
+## (LINUX)
+--------------------------------------------------------------------------------------------
 ### Game Initialization
 #### Dependencies
 - **Unreal Engine Binaries (need a github account)**
@@ -32,8 +68,6 @@
     * `Project Settings -> Platforms -> Linux -> Targeted RHIs`
 - Animation Blueprints have to be found as classes and their paths have to have a **"_C"** at the end of the reference.
 
-
------------------------------------------------------------------------------------------------------------------
 ### Running Game
 - **Compiling and Running Editor**
     ```bash
@@ -66,8 +100,6 @@
     ./run.sh -x all  ||  ./run.sh --clean all
     ```
 
-
------------------------------------------------------------------------------------------------------------------
 ### Testing
 #### Running Unit tests
 - **Individual tests**
@@ -109,8 +141,6 @@
     ./run.sh -f EDITOR      ||      ./run.sh -func EDITOR
     ```
 
-
------------------------------------------------------------------------------------------------------------------
 ### Docker
 #### Files to update
 - Add `bOverrideBuildEnvironment = true;` to `project.target.cs` file.
